@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner App</title>
+    <link rel="stylesheet" href="TESTstyles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <!-- Add Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcPkwXbdsaPAplUdZGmXhZGwEqiZmt-2A",
+            authDomain: "mealplan-donja-2024.firebaseapp.com",
+            projectId: "mealplan-donja-2024",
+            storageBucket: "mealplan-donja-2024.firebasestorage.app",
+            messagingSenderId: "1044176278835",
+            appId: "1:1044176278835:web:648edf3829de455f365a46"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Fetch meals data from Firebase
+        async function fetchMeals() {
+            try {
+                const mealsRef = database.ref('meals');
+                mealsRef.once('value').then((snapshot) => {
+                    const meals = snapshot.val();
+                    console.log(meals); // Debug log
+                });
+            } catch (error) {
+                console.error('Error fetching meals:', error);
+            }
+        }
+
+        // Event listeners for buttons
+        document.addEventListener("DOMContentLoaded", function () {
+            // Full Menu button event
+            document.getElementById("full-menu-btn").addEventListener("click", () => {
+                window.location.href = "TESTmenuList.html";
+            });
+
+            fetchMeals(); // Fetch meals on page load
+        });
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <button class="submenu-button" onclick="location.href='TESTindex.html'" aria-label="Home">
+            <span class="icon">🏠</span>Home
+        </button>
+        <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
+            <span class="icon">🛒</span>Shopping List
+        </button>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to Meal Planner</h1>
+        <div id="menu-container">
+            <h2>Menus</h2>
+            <button id="full-menu-btn" class="menu-button">View Full Menu</button>
+        </div>
+
+        <div id="shopping-list">
+            <h2>Shopping List</h2>
+            <ul id="shopping-items">
+                <!-- Shopping list items will be dynamically populated here -->
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

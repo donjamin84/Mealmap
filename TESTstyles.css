@@ -1,0 +1,891 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light background for the main content */
+    color: #333; /* Dark text color for contrast */
+    display: flex;
+}
+
+.sidebar {
+    width: 150px;
+    background-color: #252525; /* Darker sidebar */
+    padding: 20px;
+    height: 100vh; /* Full viewport height */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    position: fixed; /* Fix the sidebar in place */
+    top: 0; /* Align to the top of the viewport */
+    left: 0; /* Align to the left of the viewport */
+    overflow-y: auto; /* Add vertical scroll if content overflows */
+}
+
+
+    .sidebar h2 {
+        color: #f0e68c; /* Gold color for sidebar heading */
+        margin: 0 0 20px 0;
+    }
+.submenu-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #34495e;
+    color: #f0e68c;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+    .submenu-button:hover {
+        background-color: #3b5998;
+    }
+
+.content {
+    margin-left: 220px;
+    padding: 20px;
+    flex-grow: 1;
+    background-color: #ecf0f1;
+    min-height: 100vh;
+}
+
+
+.week-container {
+    margin-top: 20px;
+}
+
+.submenu-button {
+    width: 100%; /* Full width of the container */
+    margin-bottom: 15px; /* Increased space between buttons */
+    padding: 10px; /* Inner spacing for the buttons */
+    background-color: #333; /* Dark background color for submenu */
+    color: #f0e68c; /* Gold text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+    .submenu-button:hover {
+        background-color: #444; /* Darker on hover */
+    }
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    background-color: #ffffff; /* Light background for content area */
+    margin-left: 170px; /* Add left margin to account for the sidebar width and padding */
+}
+
+.week-button {
+    width: 100%; /* Full width of the container */
+    margin-bottom: 15px; /* Increased space between buttons */
+    padding: 10px; /* Inner spacing for the buttons */
+    background-color: #333; /* Dark background color for buttons */
+    color: #f0e68c; /* Gold text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+    .week-button:hover {
+        background-color: #444; /* Darker on hover */
+    }
+
+.day-tabs {
+    display: flex; /* Keep day tabs inline */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    gap: 10px; /* Space between buttons */
+    margin-bottom: 10px; /* Space between day tabs and detail box */
+}
+
+.day-button {
+    width: 122px; /* Width can be adjusted to your preference */
+    height: 40px; /* Consistent height with week buttons */
+    margin: 2px; /* Set equal margin around buttons for spacing */
+    background-color: #333; /* Dark background color for day buttons */
+    color: #f0e68c; /* Gold text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+
+    .day-button:hover {
+        background-color: #444; /* Darker on hover */
+    }
+
+    .day-button.selected {
+        background-color: #444; /* Darker when selected */
+    }
+
+.detail-container {
+    display: flex; /* Align week buttons next to the detail box */
+    margin-top: 10px; /* Space above the detail box */
+}
+
+.detail-box {
+    border: 1.5px solid rgba(0, 0, 0, 0.5); /* Border color */
+    padding: 10px; /* Increased padding for more space inside */
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background for detail box */
+    display: block; /* Initially hidden */
+    flex-grow: 1; /* Allow detail box to take up remaining space */
+    margin-left: 2px; /* Space between week buttons and detail box */
+    width: 100%; /* Set the width to full */
+    max-width: 700px; /* Set a maximum width for larger screens */
+    line-height: 1.5; /* Adjust line height for better readability */
+}
+.detail-header {
+    width: 100%; /* Full width of the container */
+    max-width: 400px; /* Set a maximum width for the header */
+    height: auto; /* Allow height to adjust based on content */
+    padding: 1px; /* Inner spacing */
+    background-color: #333; /* Dark background color */
+    color: #f0e68c; /* Gold text color */
+    border-radius: 5px; /* Rounded corners */
+    margin-top: 5px 0; /* Space above and below, no horizontal centering */
+    margin-bottom: 0px;
+    margin-left: 0px; /* Optional: Add left margin for space from the edge */
+    font-size: 1.2em; /* Adjust font size as needed */
+    text-align: left; /* Align text to the left */
+    font-family: "Philosopher", sans-serif; /* Apply Google Font */
+}
+/* Optional: Fine-tune alignment of text within header */
+.header-text {
+    margin: 0; /* No additional margin for the text */
+    padding-left: 10px; /* Space from the left edge of the header */
+    font-size: 1.5em; /* Larger font size for visibility */
+    color: #f0e68c; /* Text color */
+}
+
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #ffffff; /* Light background for modal */
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #3498db; /* Border color */
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close-button {
+    color: #f0e68c; /* Gold color for close button */
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close-button:hover {
+        color: black; /* Change color on hover */
+    }
+
+#selectedMealName {
+    margin: 10px 0; /* Add space above and below */
+    color: #2980b9; /* Color for emphasis */
+}
+
+input[type="text"],
+textarea {
+    width: calc(100% - 20px); /* Full width with padding */
+    padding: 10px;
+    border: 1px solid #ccc; /* Lighter border for input fields */
+    border-radius: 5px;
+    margin-bottom: 10px; /* Space between fields */
+}
+
+button {
+    background-color: #3498db; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 10px 15px;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s;
+}
+
+    button:hover {
+        background-color: #2980b9; /* Darker on hover */
+    }
+
+#successMessage {
+    color: #f0e68c; /* Gold color for success messages */
+    margin-top: 10px; /* Space above */
+    display: none; /* Hidden by default */
+}
+
+/* New classes for specific text colors */
+.text-highlight {
+    color: #e74c3c; /* Color for highlighted text */
+}
+
+.text-info {
+    color: #3498db; /* Color for informational text */
+}
+
+.text-success {
+    color: #2ecc71; /* Color for success messages */
+}
+
+.meal-header {
+    color: #e74c3c; /* Example color */
+    font-family: 'Arial', sans-serif; /* Change to your desired font */
+    font-size: 1.5em; /* Adjust size as needed */
+    margin-bottom: 10px; /* Space below the header */
+}
+
+.philosopher-regular {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.philosopher-bold {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 700;
+    font-style: normal; /* Corrected from 1.5 to normal */
+}
+
+.philosopher-regular-italic {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.philosopher-bold-italic {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.build-menu-container {
+    border: 1.5px solid rgba(0, 0, 0, 0.5); /* Match the detail box border color */
+    padding: 10px; /* Match the detail box padding */
+    border-radius: 8px; /* Match the detail box border radius */
+    background-color: #f9f9f9; /* Match the detail box background color */
+    display: block; /* Display it as a block element */
+    margin-top: 5px; /* Space above the build menu */
+    margin-left: 2px; /* Space to match alignment with the detail box */
+    height: auto; /* Allow height to adjust based on content */
+    width: 100%; /* Set the width to full */
+    max-width: 800px; /* Set a maximum width for larger screens */
+    line-height: 1.5; /* Adjust line height for better readability */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+    .build-menu-container h2 {
+        color: #e74c3c; /* Adjust color for the main heading (you can change this) */
+        font-size: 18px; /* Heading size */
+        margin-bottom: 10px; /* Space below the heading */
+    }
+
+    .build-menu-container h3 {
+        color: #333; /* Dark text color for subheading */
+        font-size: 20px; /* Subheading size */
+        margin-bottom: 10px; /* Space below the subheading */
+    }
+
+#mealDropdown, #editIngredientInput, #editAisleInput {
+    padding: 10px; /* Padding for input fields */
+    margin-bottom: 10px; /* Space below input fields */
+    font-size: 16px; /* Font size for inputs */
+    width: calc(100% - 20px); /* Full width minus padding */
+}
+
+/* Add styling for a new header */
+.build-menu-header {
+    width: 100%; /* Full width of the container */
+    max-width: 400px; /* Set a maximum width for the header */
+    height: auto; /* Allow height to adjust based on content */
+    padding: 1px; /* Inner spacing */
+    background-color: #333; /* Dark background color */
+    color: #f0e68c; /* Gold text color */
+    border-radius: 5px; /* Rounded corners */
+    margin-top: 10px; /* Space above the header */
+    margin-bottom: 5px; /* Space below the header */
+    text-align: left; /* Align text to the left */
+    font-family: "Philosopher", sans-serif; /* Apply Google Font */
+    font-size: 1.2em; /* Adjust font size as needed */
+}
+
+#customMenuList {
+    width: 98%; /* Adjust width to your preference */
+    max-width: 1000px;
+    height: auto;
+    max-height: 800px;
+    overflow-y: auto;
+    padding: 4px;
+    margin: 0 auto;
+    margin-top: 10px; /* Adjust this to set space above the entire custom menu */
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.day-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px;
+}
+
+    .day-container h3 {
+        margin-top: 0; /* Reset margin to avoid conflicting with #customMenuList */
+        margin-bottom: 10px; /* Adjust spacing below if needed */
+        text-align: left;
+    }
+
+.day {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    height: 100px;
+}
+
+    .day h4 {
+        margin-top: 5px;
+        margin-bottom: 15px;
+        font-size: 1.0em;
+    }
+
+
+
+.meal-types-row {
+    display: flex;
+    gap: 10px; /* Space between meal type boxes */
+}
+
+.meal-type {
+    flex: 1; /* Ensures all meal-type boxes have the same width */
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+
+    .meal-type i {
+        font-size: 1.5em;
+        color: #333;
+        transition: color 0.3s ease;
+    }
+
+        .meal-type i.filled {
+            color: #8bc34a; /* Green when filled */
+        }
+
+.meal-label {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.day:hover, .meal-type:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.meal-type.selected {
+    background-color: #c0ffc0; /* Darker green for selected state */
+}
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Main Container Styles */
+.menu-grid {
+    padding: 10px;
+}
+
+
+/* Weekly Container Styles */
+.week-container {
+    position: relative; /* Ensure positioned elements work */
+    width: 100%;
+    padding: 10px;
+    background: #eaeaea;
+    margin-bottom: 20px; /* Space between weeks */
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    text-align: center; /* Center the content inside the week container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-container {
+    margin-top: 0; /* Remove the gap between day containers and button */
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Ensure it spans the full width */
+}
+
+/* Specific styles for the shopping list button */
+.shopping-list-btn {
+    background-color: #252525; /* Match sidebar button background color */
+    color: #f0e68c; /* Match sidebar button text color */
+    border: none; /* No border */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s;
+}
+
+    .shopping-list-btn:hover {
+        background-color: #3b5998; /* Match sidebar button hover color */
+    }
+
+
+
+.week-header {
+    font-family: 'Open Sans', sans-serif; /* Use Open Sans font */
+    font-size: 1.4em; /* Slightly larger text */
+    font-weight: 700; /* Bold text */
+    color: #f0e68c; /* Gold text color to match menubar items */
+    margin: 10px 0 15px 0; /* Add bottom margin to bring it down */
+    text-align: left;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle shadow effect */
+}
+.week-slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px; /* Adjust margin to separate from other content */
+    padding: 5px; /* Reduce padding for a smaller size */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content; /* Adjust width to fit content */
+}
+
+/* Specific styles for the week navigation buttons */
+/* Specific styles for the week navigation buttons */
+/* Adjust the week text to be bigger */
+/* Adjust the week text to be bigger */
+.week-display {
+    font-size: 1.5em; /* Increase font size */
+    color: #333;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* Adjust the week navigation buttons to be smaller */
+.week-nav-button {
+    background-color: #252525; /* Match sidebar background color */
+    color: #f0e68c; /* Match sidebar text color */
+    border: none; /* No border */
+    padding: 3px 6px; /* Reduce padding for smaller buttons */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s;
+}
+
+.week-nav-button:hover {
+    background-color: #3b5998; /* Match sidebar button hover color */
+}
+
+
+
+
+
+
+/* Days Row */
+.days-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-bottom: 20px; /* Space below days row for the button */
+}
+
+
+/* Day Container (Remove margin-right) */
+.day-container {
+    width: calc((100% - 60px) / 7); /* 60px accounts for 6 gaps of 10px */
+    min-width: 90px; /* Keep minimum width for responsiveness */
+    background: #f9f9f9;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    margin-right: 0; /* Ensure no extra margin */
+    margin-bottom: -30px;
+    height: auto; /* Allow height to adjust based on content */
+}
+
+/* Meal Container (Keep Internal Alignment) */
+.meal-container {
+    background: #fff;
+    padding: 5px; /* Inner padding */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: left;
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    justify-content: space-between; /* Space between items */
+    margin-bottom: 0px; /* Vertical space between meal containers */
+    flex-grow: 1; /* Allow items to grow and fill the container */
+}
+
+
+/* Meal Type Header */
+.meal-type-header {
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 2px;
+    text-align: left;
+}
+
+/* Meal Item List */
+.meal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Fill available space */
+}
+
+.meal-item {
+    font-size: 0.7em;
+    color: #666;
+    margin: 1px 0;
+}
+
+    .meal-item:hover {
+        color: #333;
+        font-weight: bold;
+    }
+
+    .meal-item span {
+        color: #333;
+        font-weight: bold;
+    }
+
+/* No Meals Planned Text */
+.no-meals-text {
+    font-size: 0.7em;
+    color: #999;
+    margin: 2px 0;
+    text-align: left;
+    font-family: Arial, sans-serif;
+}
+
+/* Consistency Fixes */
+.day-container,
+.meal-container,
+.meal-type-header,
+.meal-item {
+    font-family: Arial, sans-serif;
+}
+
+/* Further Spacing Fixes */
+.meal-type-header, .meal-item {
+    line-height: 1.2em; /* Consistent line spacing */
+}
+
+.meal-item {
+    padding-left: 2px; /* Even text alignment */
+}
+
+/* Shopping List Styles */
+/* Shopping List Item - Vertical Alignment with Adjustable Widths */
+.shopping-list-item {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 1fr; /* 3 content columns + 1 column for buttons */
+    grid-template-rows: auto auto; /* First row for headers, second row for values */
+    gap: 10px; /* Space between rows and columns */
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    align-items: start; /* Align items to the top */
+    justify-items: center; /* Center items horizontally */
+    position: relative; /* Enable positioning for the edit form */
+}
+
+.location-header {
+    text-align: center; /* Ensures text is centered */
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 10px 0; /* Adjusts spacing */
+    color: #333;
+    width: 100%; /* Ensures it spans the full container */
+    display: block; /* Prevents layout issues */
+}
+
+/* Header Labels */
+.value-header {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    grid-row: 1; /* Place in the first row */
+    margin-bottom: -20px; /* Adjust space below the header */
+}
+
+/* Adjust the margin-top of the value-box */
+.value-box {
+    padding: 8px 12px;
+    margin-top: -35px; /* Adjust space above the box */
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    grid-row: 2; /* Place in the second row */
+    white-space: nowrap; /* Prevent wrapping */
+    width: 100%; /* Allow dynamic adjustment */
+}
+
+/* Buttons Section - Center Edit and Delete buttons */
+.button-container {
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: row; /* Align buttons horizontally */
+    justify-content: center; /* Center the buttons within the container */
+    align-items: center; /* Center the buttons vertically */
+    gap: 10px; /* Adjust the gap between buttons */
+    width: 70%; /* Adjust the width as needed */
+    margin-top: 10px; /* Add space above the button container */
+}
+
+/* Edit Button Styling */
+.edit-btn {
+    background: #333; /* New blue background */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    flex: 1;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Delete Button Styling */
+.delete-btn {
+    background: #333; /* Red background */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    flex: 1;
+    max-width: 80px;
+    text-align: center;
+}
+
+    .delete-btn:hover {
+        background: #c0392b; /* Darker red on hover */
+    }
+    }
+
+}
+/* Edit Form Wrapper - Center Alignment */
+/* Center the Edit Form Wrapper in the Parent */
+/* Center the Edit Form Wrapper Within the Grid */
+.edit-form-wrapper {
+    position: fixed; /* Overlay the edit form */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the form */
+    display: flex;
+    flex-direction: column; /* Stack form elements */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    width: 100%; /* Full width */
+    max-width: 500px; /* Set a maximum width */
+    background: #f9f9f9; /* Form background */
+    padding: 10px; /* Match the detail box padding */
+    box-sizing: border-box;
+    border: 1.5px solid rgba(0, 0, 0, 0.5); /* Match the detail box border color */
+    border-radius: 8px; /* Match the detail box border radius */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 10; /* Ensure it appears above other content */
+    line-height: 1.5; /* Adjust line height for better readability */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+/* Edit Form */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between form fields */
+    width: 100%; /* Use full width of the wrapper */
+    max-width: 500px; /* Set a maximum width */
+    text-align: left; /* Align text in inputs and labels to the left */
+}
+
+    /* Form Labels */
+    .edit-form label {
+        font-size: 0.9em;
+        font-weight: bold;
+        color: #333; /* Dark text color */
+        margin-bottom: -5px;
+        font-family: Arial, sans-serif; /* Ensure consistent font */
+    }
+
+.edit-form-header {
+    font-size: 0.9em; /* Adjust the font size as needed */
+    font-weight: bold;
+    color: #333; /* Adjust the color as needed */
+    text-align: left; /* Center the text */
+    margin-bottom: 5px; /* Adjust the space below the header */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+
+    /* Input Fields */
+    .edit-form input[type="number"],
+    .edit-form input[type="text"],
+    .edit-form .value-box {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 0.9em;
+        background: #fff;
+        text-align: left; /* Align text in inputs to the left */
+        font-family: Arial, sans-serif; /* Ensure consistent font */
+    }
+
+/* Buttons */
+/* Form Buttons Section */
+.form-buttons {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10px; /* Adjust the space between Save and Cancel buttons */
+    margin-top: -10px; /* Space above the buttons */
+}
+
+.save-btn, .cancel-btn {
+    background: #3498db; /* Button color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: auto; /* Ensure the buttons have natural width */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+.cancel-btn {
+    background: #dc3545;
+}
+
+.save-btn:hover {
+    background: #2980b9; /* Darker on hover */
+}
+
+.cancel-btn:hover {
+    background: #c82333;
+}
+
+/* Remove spinner in number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* For Firefox */
+}
+
+/* Add styles for the new item form container */
+.add-item-header {
+    font-size: 0.9em; /* Similar font size to value-header */
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    margin-bottom: -10px; /* Space below the header */
+}
+#add-item-container {
+    border: 1px solid #ccc; /* Match the detail box border color */
+    padding: 10px; /* Match the detail box padding */
+    border-radius: 8px; /* Match the detail box border radius */
+    background-color: #f9f9f9; /* Match the detail box background color */
+    margin-top: 5px; /* Space above the container */
+    margin-bottom: 10px; /* Space below the container */
+    width: 100%; /* Full width */
+    max-width: 500px; /* Set a maximum width */
+    line-height: 1.5; /* Adjust line height for better readability */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+#add-item-container h2 {
+    color: #333; /* Dark text color */
+    font-size: 1.2em; /* Adjust font size as needed */
+    margin-bottom: 10px; /* Space below the header */
+    font-family: "Philosopher", sans-serif; /* Apply Google Font */
+}
+
+#new-item-form .form-group {
+    margin-bottom: 10px; /* Space between form groups */
+}
+
+#new-item-form label {
+    display: block;
+    margin-bottom: 0px; /* Space below the label */
+    color: #333; /* Dark text color */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+#new-item-form input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 0px; /* Space below the input */
+    border: 1px solid #ccc; /* Light border for input fields */
+    border-radius: 5px; /* Rounded corners */
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+#new-item-form button {
+    padding: 10px 15px;
+    background-color: #3498db; /* Button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s;
+    font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+#new-item-form button:hover {
+    background-color: #2980b9; /* Darker on hover */
+}
+    }
+

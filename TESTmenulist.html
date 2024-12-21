@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner - Full Menu</title>
+    <link rel="stylesheet" href="TESTstyles.css">
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <!-- Add Firebase SDKs -->
+    <script type="module">
+        // Your web app's Firebase configuration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcPkwXbdsaPAplUdZGmXhZGwEqiZmt-2A",
+            authDomain: "mealplan-donja-2024.firebaseapp.com",
+            projectId: "mealplan-donja-2024",
+            storageBucket: "mealplan-donja-2024.appspot.com",
+            messagingSenderId: "1044176278835",
+            appId: "1:1044176278835:web:648edf3829de455f365a46"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Make db available globally
+        window.db = db;
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <button class="submenu-button" onclick="location.href='TESTindex.html'" aria-label="Home">
+            <span class="icon">🏠</span>Home
+        </button>
+        <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
+            <span class="icon">🛒</span>Shopping List
+        </button>
+    </div>
+
+    <div class="content">
+        <h1>Full Menu by Week</h1>
+
+        <div class="week-container">
+            <div class="week-slider">
+                <button id="prevWeek" class="week-nav-button" aria-label="Previous Week">←</button>
+                <span id="currentWeek" class="week-display">Week 1</span>
+                <button id="nextWeek" class="week-nav-button" aria-label="Next Week">→</button>
+            </div>
+            <!-- Other content of the week container goes here -->
+            <div id="menu-list-container" class="menu-grid">
+                <!-- Content will be dynamically generated here -->
+            </div>
+            <div class="button-container">
+                <button id="generateShoppingList" class="shopping-list-btn">Generate Shopping List</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="TESTmenuList.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
