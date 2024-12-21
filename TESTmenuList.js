@@ -1,15 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 // Import Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
 import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDcPkwXbdsaPAplUdZGmXhZGwEqiZmt-2A",
-    authDomain: "mealplan-donja-2024.firebaseapp.com",
-    projectId: "mealplan-donja-2024",
-    storageBucket: "mealplan-donja-2024.appspot.com",
-    messagingSenderId: "1044176278835",
-    appId: "1:1044176278835:web:648edf3829de455f365a46"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -35,21 +38,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const mealsRef = collection(db, 'meals');
-            const q = query(mealsRef, where('week', '==', week));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                console.warn(`No menu items found for Week ${week}`);
-            } else {
-                console.log(`Fetched ${querySnapshot.size} menu items for Week ${week}`);
+            const response = await fetch(`/api/menu/${week}`);
+            if (!response.ok) {
+                throw new Error(`No menu items found for Week ${week}`);
             }
-
-            const meals = querySnapshot.docs.map(doc => {
-                console.log(`Document data: ${JSON.stringify(doc.data())}`);
-                return doc.data();
-            });
-
+            const meals = await response.json();
             console.log(`Fetched menu for Week ${week}:`, meals);
             const groupedMeals = groupMealsByWeek(meals);
             console.log(`Grouped meals for Week ${week}:`, groupedMeals);
@@ -59,8 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Error fetching menu items:", error);
         }
     }
-
-
 
     function groupMealsByWeek(meals) {
         const grouped = {};
