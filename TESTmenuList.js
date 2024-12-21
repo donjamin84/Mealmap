@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Import Firebase SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -248,6 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial load
     loadMenuItems(currentWeek);
 });
+
 
 
 
