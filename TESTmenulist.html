@@ -7,28 +7,6 @@
     <link rel="stylesheet" href="TESTstyles.css">
     <!-- Add Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
-    <!-- Add Firebase SDKs -->
-    <script type="module">
-        // Your web app's Firebase configuration
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDcPkwXbdsaPAplUdZGmXhZGwEqiZmt-2A",
-            authDomain: "mealplan-donja-2024.firebaseapp.com",
-            projectId: "mealplan-donja-2024",
-            storageBucket: "mealplan-donja-2024.appspot.com",
-            messagingSenderId: "1044176278835",
-            appId: "1:1044176278835:web:648edf3829de455f365a46"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Make db available globally
-        window.db = db;
-    </script>
 </head>
 <body>
     <div class="sidebar">
@@ -63,6 +41,7 @@
     <script type="module" src="TESTmenuList.js"></script>
 </body>
 </html>
+
 
 
 
