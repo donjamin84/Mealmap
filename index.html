@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner App</title>
+    <link rel="stylesheet" href="TESTstyles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <!-- Add Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        async function initializeFirebase() {
+            try {
+                const response = await fetch('/firebase-config');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const firebaseConfig = await response.json();
+
+                // Initialize Firebase
+                const app = initializeApp(firebaseConfig);
+                const database = getDatabase(app);
+
+                // Fetch meals data from Firebase
+                async function fetchMeals() {
+                    try {
+                        const mealsRef = ref(database, 'meals');
+                        const snapshot = await get(mealsRef);
+                        if (snapshot.exists()) {
+                            const meals = snapshot.val();
+                            console.log(meals); // Debug log
+                        } else {
+                            console.log("No data available");
+                        }
+                    } catch (error) {
+                        console.error('Error fetching meals:', error);
+                    }
+                }
+
+                // Event listeners for buttons
+                document.addEventListener("DOMContentLoaded", function () {
+                    console.log("DOM fully loaded and parsed"); // Debug log
+                    const fullMenuBtn = document.getElementById("full-menu-btn");
+                    if (fullMenuBtn) {
+                        console.log("Full Menu button found"); // Debug log
+                        fullMenuBtn.addEventListener("click", () => {
+                            console.log("Full Menu button clicked"); // Debug log
+                            window.location.href = "TESTmenuList.html";
+                        });
+                    } else {
+                        console.error("Full Menu button not found");
+                    }
+
+                    fetchMeals(); // Fetch meals on page load
+                });
+            } catch (error) {
+                console.error('Error initializing Firebase:', error);
+            }
+        }
+
+        initializeFirebase();
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <button class="submenu-button" onclick="location.href='index.html'" aria-label="Home">
+            <span class="icon">🏠</span>Home
+        </button>
+        <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
+            <span class="icon">🛒</span>Shopping List
+        </button>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to Meal Planner</h1>
+        <div id="menu-container">
+            <h2>Menus</h2>
+            <button id="full-menu-btn" class="menu-button">View Full Menu</button>
+        </div>
+
+        <div id="shopping-list">
+            <h2>Shopping List</h2>
+            <ul id="shopping-items">
+                <!-- Shopping list items will be dynamically populated here -->
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
