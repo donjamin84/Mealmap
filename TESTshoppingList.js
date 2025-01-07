@@ -1,6 +1,7 @@
 // Load shopping list from LocalStorage on window load
 window.onload = () => {
     const shoppingList = getShoppingList();
+    console.log("Loaded Shopping List:", shoppingList); // Debug log
     renderShoppingList(shoppingList);
 };
 
@@ -17,6 +18,7 @@ function saveShoppingList(list) {
 
 // Render the Shopping List
 function renderShoppingList(shoppingList) {
+    console.log("Rendering Shopping List"); // Debug log
     const container = document.getElementById("shopping-list-container");
 
     // Clear previous content
@@ -27,7 +29,7 @@ function renderShoppingList(shoppingList) {
         return;
     }
 
-    // Group items by location
+    // Group items by Location
     const groupedByLocation = shoppingList.reduce((groups, item) => {
         const location = item.location || "No Location Set";
         if (!groups[location]) groups[location] = [];
@@ -35,39 +37,69 @@ function renderShoppingList(shoppingList) {
         return groups;
     }, {});
 
+    // Function to compare locations, treating numeric values correctly
+    const compareLocations = (a, b) => {
+        const aIsNumeric = !isNaN(a);
+        const bIsNumeric = !isNaN(b);
+
+        if (aIsNumeric && bIsNumeric) {
+            return Number(a) - Number(b);
+        } else if (aIsNumeric) {
+            return -1;
+        } else if (bIsNumeric) {
+            return 1;
+        } else {
+            return a.localeCompare(b);
+        }
+    };
+
+    // Sort locations
+    const sortedLocations = Object.keys(groupedByLocation).sort(compareLocations);
+
     // Render each location group
-    Object.keys(groupedByLocation).forEach(location => {
+    sortedLocations.forEach(location => {
         const group = document.createElement("div");
         group.className = "location-group";
 
         const header = document.createElement("h2");
         header.className = "location-header";
-        header.textContent = location;
+        header.textContent = `Location: ${location}`;
         group.appendChild(header);
 
         const itemList = document.createElement("ul");
         itemList.className = "location-items";
 
+        // Display only one ingredient per Group ID
+        const uniqueGroupIds = new Set();
         groupedByLocation[location].forEach(item => {
-            const listItem = document.createElement("li");
-            listItem.className = "shopping-list-item";
+            if (!uniqueGroupIds.has(item.groupId)) {
+                uniqueGroupIds.add(item.groupId);
 
-            listItem.innerHTML = `
-                <div class="value-header">Ingredient</div>
-                <div class="value-box ingredient-name">${item.ingredient}</div>
+                const listItem = document.createElement("li");
+                listItem.className = "shopping-list-item";
 
-                <div class="value-header">Amount</div>
-                <div class="value-box ingredient-amount">${item.amount} ${item.unit}</div>
+                listItem.innerHTML = `
+                    <div class="value-header">Ingredient</div>
+                    <div class="value-box ingredient-name">${item.ingredient}</div>
 
-                <div class="value-header">Location</div>
-                <div class="value-box ingredient-location">${item.location || "No Location Set"}</div>
+                    <div class="value-header">Amount</div>
+                    <div class="value-box ingredient-amount">${item.amount} ${item.unit}</div>
 
-                <div class="button-container">
-                    <button class="edit-btn" onclick="enableEdit(this)"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" onclick="deleteItem(this)"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `;
-            itemList.appendChild(listItem);
+                    <div class="value-header">Location</div>
+                    <div class="value-box ingredient-location">${location}</div>
+
+                    <div class="button-container">
+                        <button class="edit-btn" onclick="enableEdit(this)">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="delete-btn" onclick="deleteItem(this)">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </div>
+                `;
+                console.log('Appending list item:', listItem); // Debug log
+                itemList.appendChild(listItem);
+            }
         });
 
         group.appendChild(itemList);
@@ -187,26 +219,45 @@ document.getElementById("new-item-form").onsubmit = (e) => {
     document.getElementById("new-item-form").reset();
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-    const categories = document.querySelectorAll('.category'); // Assuming each category has a class 'category'
+document.addEventListener('DOMContentLoaded', () => {
+    const shoppingListContainer = document.getElementById('shopping-list-container');
+    const shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
 
-    categories.forEach(category => {
-        const valueBoxes = category.querySelectorAll('.value-box');
-        let maxWidth = 0;
+    if (shoppingList.length === 0) {
+        shoppingListContainer.innerHTML = '<p>No items found.</p>';
+        return;
+    }
 
-        // Calculate the maximum width of all value boxes in this category
-        valueBoxes.forEach(box => {
-            const boxWidth = box.scrollWidth;
-            if (boxWidth > maxWidth) {
-                maxWidth = boxWidth;
-            }
-        });
+    // Function to compare locations, treating numeric values correctly
+    const compareLocations = (a, b) => {
+        const aLocation = a.location;
+        const bLocation = b.location;
 
-        // Set the width of all value boxes in this category to the maximum width
-        valueBoxes.forEach(box => {
-            box.style.width = `${maxWidth}px`;
-        });
+        const aIsNumeric = !isNaN(aLocation);
+        const bIsNumeric = !isNaN(bLocation);
+
+        if (aIsNumeric && bIsNumeric) {
+            return Number(aLocation) - Number(bLocation);
+        } else if (aIsNumeric) {
+            return -1;
+        } else if (bIsNumeric) {
+            return 1;
+        } else {
+            return aLocation.localeCompare(bLocation);
+        }
+    };
+
+    // Sort the shopping list by location
+    shoppingList.sort(compareLocations);
+
+    const list = document.createElement('ul');
+    shoppingList.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.ingredient}: ${item.amount} ${item.unit} (${item.location})`;
+        list.appendChild(listItem);
     });
+
+    shoppingListContainer.appendChild(list);
 });
 
 
