@@ -1,5 +1,6 @@
-mport { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -14,6 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Sign in function
 document.getElementById("sign-in-button").addEventListener("click", () => {
@@ -57,58 +59,19 @@ onAuthStateChanged(auth, (user) => {
 
 // Define the loadMenuItems function
 function loadMenuItems() {
-    // Logic to load menu items goes here
     console.log("Loading menu items...");
     // Example: Fetch menu items from Firestore and display them
-    // const db = getFirestore(app);
-    // const menuItemsRef = collection(db, "menuItems");
-    // getDocs(menuItemsRef).then((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //         console.log(`${doc.id} => ${doc.data()}`);
-    //     });
-    // });
+    const menuItemsRef = collection(db, "menuItems");
+    getDocs(menuItemsRef).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data()}`);
+        });
+    }).catch((error) => {
+        console.error("Error loading menu items:", error);
+    });
 }
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-document.getElementById("sign-in-button").addEventListener("click", () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    signIn(email, password);
-});
-
-async function signIn(email, password) {
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        console.log("User signed in successfully");
-    } catch (error) {
-        console.error("Error signing in:", error);
-    }
-}
-
-async function signOutUser() {
-    try {
-        await signOut(auth);
-        console.log("User signed out successfully");
-    } catch (error) {
-        console.error("Error signing out:", error);
-    }
-}
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("User is signed in:", user);
-        loadMenuItems(currentWeek); // Load menu items after user is authenticated
-    } else {
-        console.log("No user is signed in");
-        showSignInForm();
-    }
-});
 
 function showSignInForm() {
     document.getElementById("sign-in-form").style.display = "block";
 }
 
-// Add your existing functions like loadMenuItems, renderMenuItems, etc. here
