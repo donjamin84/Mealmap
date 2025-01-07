@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Planner - Shopping List</title>
+    <title>Meal Planner - Ingredients List</title>
     <link rel="stylesheet" href="TESTstyles.css">
     <!-- Add Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
@@ -27,25 +27,28 @@
     </div>
 
     <div class="content">
-        <h1>Shopping List</h1>
-        <div id="shopping-list-container"></div> <!-- Ensure this element exists -->
-        <form id="new-item-form">
-            <input type="text" id="ingredient" placeholder="Ingredient" required>
-            <input type="number" id="amount" placeholder="Amount" step="any" min="0" required>
-            <input type="text" id="unit" placeholder="Unit" required>
-            <input type="text" id="location" placeholder="Location">
-            <button type="submit">Add Item</button>
-        </form>
+        <h1>Ingredients List</h1>
+        <table id="ingredients-table" class="ingredients-table">
+            <thead>
+                <tr>
+                    <th>Ingredient</th>
+                    <th style="display:none;">Amount</th> <!-- Hide amount column -->
+                    <th style="display:none;">Unit</th> <!-- Hide unit column -->
+                    <th>Location</th> <!-- Add location column -->
+                    <th>Group ID</th> <!-- Add group ID column -->
+                    <th>Actions</th> <!-- Add actions column -->
+                    <th>Enable/Disable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ingredients will be dynamically populated here -->
+            </tbody>
+        </table>
     </div>
 
-    <script type="module" src="TESTshoppingList.js"></script>
+    <script type="module" src="ingredientsList.js"></script>
 </body>
 </html>
-
-
-
-
-
 
 
 
