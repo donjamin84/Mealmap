@@ -11,29 +11,96 @@
 <body>
     <div class="sidebar">
         <h2>Menu</h2>
-        <button class="submenu-button" onclick="location.href='TESTindex.html'" aria-label="Home">
+        <button class="submenu-button" onclick="location.href='index.html'" aria-label="Home">
             <span class="icon">🏠</span>Home
         </button>
         <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
             <span class="icon">🛒</span>Shopping List
+        </button>
+        <button class="submenu-button" onclick="location.href='TESTmenulist.html'" aria-label="Full Menu">
+            <span class="icon">📋</span>Full Menu
+        </button>
+        <button class="submenu-button" onclick="location.href='ingredientsList.html'" aria-label="Ingredients List">
+            <span class="icon">🍴</span>Ingredients List
         </button>
     </div>
 
     <div class="content">
         <h1>Full Menu by Week</h1>
 
-        <div class="week-container">
-            <div class="week-slider">
-                <button id="prevWeek" class="week-nav-button" aria-label="Previous Week">←</button>
-                <span id="currentWeek" class="week-display">Week 1</span>
-                <button id="nextWeek" class="week-nav-button" aria-label="Next Week">→</button>
+        <div class="top-bar-container">
+            <div class="week-slider-container">
+                <div class="week-slider">
+                    <button id="prevWeek" class="week-nav-button" aria-label="Previous Week">←</button>
+                    <span id="currentWeek" class="week-display">Week 1</span>
+                    <button id="nextWeek" class="week-nav-button" aria-label="Next Week">→</button>
+                </div>
             </div>
-            <!-- Other content of the week container goes here -->
-            <div id="menu-list-container" class="menu-grid">
-                <!-- Content will be dynamically generated here -->
+        </div>
+
+        <div id="menu-list-container" class="menu-grid">
+            <!-- Content will be dynamically generated here -->
+        </div>
+        <div class="button-container">
+            <button id="generateShoppingList" class="shopping-list-btn">Generate Shopping List</button>
+        </div>
+    </div>
+
+    <!-- Ingredient Modal -->
+    <div id="ingredientModal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form id="ingredientForm">
+                <input type="hidden" id="mealID" class="input-box">
+                <label for="ingredient">Ingredient:</label>
+                <input type="text" id="ingredient" class="input-box" required>
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" class="input-box" required>
+                <label for="unit">Unit:</label>
+                <input type="text" id="unit" class="input-box" required>
+                <input type="hidden" id="meal" class="input-box">
+                <button type="submit">Save</button>
+            </form>
+            <div class="ingredient-box">
+                <h2>Add Ingredient</h2>
+                <input type="text" id="ingredientName" placeholder="Ingredient Name" required>
+                <input type="number" id="ingredientQuantity" placeholder="Quantity" required>
+                <select id="ingredientUnit" required>
+                    <option value="" disabled selected>Select Unit</option>
+                    <option value="grams">Grams</option>
+                    <option value="ml">Milliliters</option>
+                    <option value="cups">Cups</option>
+                    <!-- Add more units as needed -->
+                </select>
+                <textarea id="ingredientNotes" placeholder="Notes (optional)"></textarea>
+                <button type="submit" onclick="addIngredient()">Add Ingredient</button>
             </div>
-            <div class="button-container">
-                <button id="generateShoppingList" class="shopping-list-btn">Generate Shopping List</button>
+        </div>
+    </div>
+
+    <!-- Recipe Popup -->
+    <div id="recipePopup" class="recipe-popup" style="display:none;">
+        <div class="recipe-popup-content">
+            <h3>Recipe Details</h3>
+            <table class="ingredients-table">
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Amount</th>
+                    <th>Unit</th>
+                </tr>
+                <!-- Ingredients will be dynamically added here -->
+            </table>
+            <div class="recipe-popup">
+                <div class="recipe-popup-content">
+                    <div class="servings-section">
+                        <label for="servingsInput">Servings:</label>
+                        <input type="number" id="servingsInput" name="servings" min="1" max="100">
+                    </div>
+                    <div class="recipe-input-row">
+                        <textarea id="recipeInput" name="recipe" placeholder="Enter recipe details..."></textarea>
+                    </div>
+                    <button id="saveButton">Save</button>
+                </div>
             </div>
         </div>
     </div>
