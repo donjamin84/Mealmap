@@ -3,60 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping List</title>
+    <title>Meal Planner - Shopping List</title>
     <link rel="stylesheet" href="TESTstyles.css">
-    <!-- Add Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <h2>Menu</h2>
-        <button class="submenu-button" onclick="location.href='TESTindex.html'" aria-label="Home">
+        <button class="submenu-button" onclick="location.href='index.html'" aria-label="Home">
             <span class="icon">🏠</span>Home
+        </button>
+        <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
+            <span class="icon">🛒</span>Shopping List
         </button>
         <button class="submenu-button" onclick="location.href='TESTmenulist.html'" aria-label="Full Menu">
             <span class="icon">📋</span>Full Menu
         </button>
+        <button class="submenu-button" onclick="location.href='ingredientsList.html'" aria-label="Ingredients List">
+            <span class="icon">🍴</span>Ingredients List
+        </button>
     </div>
 
-    <!-- Main Content -->
     <div class="content">
-        <h1>Your Shopping List</h1>
-
-        <!-- Shopping List Container -->
-        <div id="shopping-list-container">
-            <p>Loading your shopping list...</p>
-        </div>
-
-        <!-- Add Item Form Container -->
-        <div id="add-item-container">
-            <h2>Add New Item</h2>
-            <form id="new-item-form">
-                <div class="form-group">
-                    <label for="ingredient">Ingredient:</label>
-                    <input type="text" id="ingredient" name="ingredient" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount:</label>
-                    <input type="number" id="amount" name="amount" step="any" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="location">Location:</label>
-                    <input type="text" id="location" name="location" required>
-                </div>
-                <button type="submit">Add Item</button>
-            </form>
-        </div>
+        <h1>Shopping List</h1>
+        <div id="shopping-list-container"></div> <!-- Ensure this element exists -->
+        <form id="new-item-form">
+            <input type="text" id="ingredient" placeholder="Ingredient" required>
+            <input type="number" id="amount" placeholder="Amount" step="any" min="0" required>
+            <input type="text" id="unit" placeholder="Unit" required>
+            <input type="text" id="location" placeholder="Location">
+            <button type="submit">Add Item</button>
+        </form>
     </div>
 
-    <!-- Link to JavaScript -->
-    <script src="TESTshoppingList.js" type="module"></script>
-
+    <script type="module" src="TESTshoppingList.js"></script>
 </body>
 </html>
+
 
 
 
