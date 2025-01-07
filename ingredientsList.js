@@ -15,11 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 async function fetchIngredients() {
     try {
         const querySnapshot = await getDocs(collection(db, '541'));
