@@ -9,35 +9,45 @@
     <script type="module" src="index.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Menu</h2>
-        <button class="submenu-button" onclick="location.href='index.html'" aria-label="Home">
-            <span class="icon">🏠</span>Home
-        </button>
-        <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
-            <span class="icon">🛒</span>Shopping List
-        </button>
-        <button class="submenu-button" onclick="location.href='TESTmenulist.html'" aria-label="Full Menu">
-            <span class="icon">📋</span>Full Menu
-        </button>
-        <button class="submenu-button" onclick="location.href='ingredientsList.html'" aria-label="Ingredients List">
-            <span class="icon">🍴</span>Ingredients List
-        </button>
+    <div id="sign-in-form" style="display: none;">
+        <h2>Sign In</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="sign-in-button">Sign In</button>
     </div>
 
-    <div class="content">
-        <h1>Welcome to Meal Planner</h1>
-        <div id="menu-container">
-            <h2>Menus</h2>
-            <button id="full-menu-btn" class="menu-button" onclick="location.href='TESTmenulist.html'">View Full Menu</button>
+    <div id="app-content" style="display: none;">
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <button class="submenu-button" onclick="location.href='index.html'" aria-label="Home">
+                <span class="icon">🏠</span>Home
+            </button>
+            <button class="submenu-button" onclick="location.href='ShoppingList.html'" aria-label="Shopping List">
+                <span class="icon">🛒</span>Shopping List
+            </button>
+            <button class="submenu-button" onclick="location.href='TESTmenulist.html'" aria-label="Full Menu">
+                <span class="icon">📋</span>Full Menu
+            </button>
+            <button class="submenu-button" onclick="location.href='ingredientsList.html'" aria-label="Ingredients List">
+                <span class="icon">🍴</span>Ingredients List
+            </button>
         </div>
 
-        <div id="shopping-list">
-            <h2>Shopping List</h2>
-            <ul id="shopping-items">
-                <!-- Shopping list items will be dynamically populated here -->
-            </ul>
+        <div class="content">
+            <h1>Welcome to Meal Planner</h1>
+            <div id="menu-container">
+                <h2>Menus</h2>
+                <button id="full-menu-btn" class="menu-button" onclick="location.href='TESTmenulist.html'">View Full Menu</button>
+            </div>
+
+            <div id="shopping-list">
+                <h2>Shopping List</h2>
+                <ul id="shopping-items">
+                    <!-- Shopping list items will be dynamically populated here -->
+                </ul>
+            </div>
         </div>
     </div>
 </body>
 </html>
+
