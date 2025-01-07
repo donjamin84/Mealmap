@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,7 +14,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 // Sign in function
 document.getElementById("sign-in-button").addEventListener("click", () => {
@@ -49,7 +47,7 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is signed in:", user);
         document.getElementById("sign-in-form").style.display = "none";
         document.getElementById("app-content").style.display = "block";
-        loadMenuItems(); // Call the loadMenuItems function when the user is signed in
+        // Call the loadMenuItems function from the appropriate script if needed
     } else {
         console.log("No user is signed in");
         document.getElementById("sign-in-form").style.display = "block";
@@ -57,21 +55,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Define the loadMenuItems function
-function loadMenuItems() {
-    console.log("Loading menu items...");
-    // Example: Fetch menu items from Firestore and display them
-    const menuItemsRef = collection(db, "menuItems");
-    getDocs(menuItemsRef).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data()}`);
-        });
-    }).catch((error) => {
-        console.error("Error loading menu items:", error);
-    });
-}
-
 function showSignInForm() {
     document.getElementById("sign-in-form").style.display = "block";
 }
+
 
