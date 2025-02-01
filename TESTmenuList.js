@@ -1,4 +1,4 @@
-﻿import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import {
     getFirestore,
     collection,
@@ -255,7 +255,7 @@ async function fetchIngredients(mealId) {
 
 
 
-async function showIngredientsPopup(mealId, meal, ingredients = []) {
+async function showIngredientsPopup(mealId, meal, ingredients = [], currentServings = 1) {
     const popup = document.createElement("div");
     popup.className = "ingredients-popup";
 
@@ -266,42 +266,68 @@ async function showIngredientsPopup(mealId, meal, ingredients = []) {
     title.textContent = `Ingredients for ${meal}`;
     popupContent.appendChild(title);
 
+    const servingsLabel = document.createElement("label");
+    servingsLabel.textContent = "Servings: ";
+    popupContent.appendChild(servingsLabel);
+
+    const servingsInput = document.createElement("input");
+    servingsInput.type = "number";
+    servingsInput.value = currentServings;
+    servingsInput.min = 1;
+    popupContent.appendChild(servingsInput);
+
     const ingredientsTable = document.createElement("table");
     ingredientsTable.className = "ingredients-table";
 
     // Create header row
     const headerRow = document.createElement("tr");
     headerRow.innerHTML = `
-        <th>Meal</th>
-        <th>Meal ID</th>
         <th>Ingredient</th>
         <th>Amount</th>
         <th>Unit</th>
-        <th>Actions</th>
     `;
     ingredientsTable.appendChild(headerRow);
 
-    // Populate rows with existing ingredients
-    ingredients.forEach(ingredient => renderSavedIngredientRow(ingredientsTable, mealId, meal, ingredient));
+    // Function to render ingredient rows based on servings
+    const renderIngredientRows = (servings) => {
+        // Clear existing rows
+        ingredientsTable.querySelectorAll("tr:not(:first-child)").forEach(row => row.remove());
 
-    // Add an empty row for new ingredient input
-    addIngredientInputRow(ingredientsTable, mealId, meal);
+        // Populate rows with adjusted ingredients
+        ingredients.forEach(ingredient => {
+            const row = document.createElement("tr");
+            const adjustedAmount = (ingredient.amount / currentServings) * servings;
+            row.innerHTML = `
+                <td>${ingredient.ingredient}</td>
+                <td>${adjustedAmount.toFixed(2)}</td>
+                <td>${ingredient.unit}</td>
+            `;
+            ingredientsTable.appendChild(row);
+        });
+    };
+
+    // Initial render
+    renderIngredientRows(currentServings);
+
+    // Update ingredient amounts when servings change
+    servingsInput.addEventListener("input", () => {
+        const newServings = parseInt(servingsInput.value, 10);
+        if (!isNaN(newServings) && newServings > 0) {
+            renderIngredientRows(newServings);
+        }
+    });
 
     popupContent.appendChild(ingredientsTable);
 
     const closeButton = document.createElement("button");
     closeButton.textContent = "Close";
     closeButton.addEventListener("click", () => document.body.removeChild(popup));
-
     popupContent.appendChild(closeButton);
 
     popup.appendChild(popupContent);
     document.body.appendChild(popup);
 }
 
-
-// Function to add a new ingredient input row
-// Function to add a new ingredient input row
 function addIngredientInputRow(table, mealId, meal) {
     const row = document.createElement("tr");
 
@@ -318,11 +344,12 @@ function addIngredientInputRow(table, mealId, meal) {
 
     const saveButton = row.querySelector(".save-servings-btn");
     saveButton.addEventListener("click", async () => {
-        const newServings = parseInt(row.querySelector("input[type='number']").value.trim(), 10);
+        const newServingsInput = row.querySelector("input[type='number']");
+        const newServings = parseInt(newServingsInput.value.trim(), 10);
 
         if (!isNaN(newServings) && newServings > 0) {
             try {
-                await saveServings(mealId, meal, newServings);
+                await saveServings(mealId, newServings);
                 console.log("Servings updated successfully:", { meal, mealId, servings: newServings });
                 document.body.removeChild(row.closest(".ingredients-popup"));
             } catch (error) {
@@ -333,6 +360,11 @@ function addIngredientInputRow(table, mealId, meal) {
         }
     });
 }
+
+
+
+
+
 
 
 
@@ -436,23 +468,25 @@ async function fetchServings(mealId) {
     console.log(`Fetching servings for Meal ID: ${mealId}`);
 
     try {
-        const servingsRef = collection(db, 'servings');
-        const q = query(servingsRef, where('mealID', '==', String(mealId))); // Ensure 'mealID' matches the field name in Firestore
-        const servingsSnapshot = await getDocs(q);
+        const recipeRef = doc(db, 'recipes', mealId + '_recipe');
+        const recipeDoc = await getDoc(recipeRef);
 
-        if (servingsSnapshot.empty) {
+        if (!recipeDoc.exists()) {
             console.warn(`No servings found for Meal ID: ${mealId}`);
             return null;
         }
 
-        const servings = servingsSnapshot.docs.map(doc => doc.data())[0]; // Assuming one document per mealId
-        console.log(`Fetched servings for Meal ID ${mealId}:`, servings);
-        return servings;
+        const recipeData = recipeDoc.data();
+        console.log(`Fetched servings for Meal ID ${mealId}:`, recipeData.servings);
+        return recipeData.servings;
     } catch (error) {
         console.error("Error fetching servings:", error);
         return null;
     }
 }
+
+
+
 
 
 
@@ -548,17 +582,16 @@ async function generateShoppingList(week) {
                 ing => String(ing.mealId) === String(meal.mealId) && ing.enabled
             );
 
-            const mealServingsRef = collection(db, 'servings');
-            const q = query(mealServingsRef, where('mealID', '==', String(meal.mealId)));
-            const servingsSnapshot = await getDocs(q);
-            const servingsData = servingsSnapshot.docs.map(doc => doc.data())[0];
+            const recipeRef = doc(db, 'recipes', `${meal.mealId}_recipe`);
+            const recipeDoc = await getDoc(recipeRef);
 
-            if (!servingsData) {
-                console.warn(`No servings data found for Meal ID: ${meal.mealId}`);
+            if (!recipeDoc.exists()) {
+                console.warn(`No recipe data found for Meal ID: ${meal.mealId}`);
                 continue;
             }
 
-            const servingsPerMeal = servingsData.servings;
+            const recipeData = recipeDoc.data();
+            const servingsPerMeal = recipeData.servings;
 
             mealIngredients.forEach(ing => {
                 const key = ing.groupId;
@@ -586,10 +619,6 @@ async function generateShoppingList(week) {
         console.error("Error generating shopping list:", error);
     }
 }
-
-
-
-
 
 
 
@@ -697,29 +726,7 @@ async function showOptionsPopup(mealId, meal, ingredients, servings) {
 
 
 
-async function showRecipePopup(mealId, meal, ingredients, defaultServings = 1, recipeText = "") {
-    // Fetch the recipe data from the database
-    let savedServings = defaultServings;
-    let savedRecipeText = recipeText;
-
-    try {
-        const recipeRef = doc(db, 'recipes', mealId + '_recipe');
-        const recipeDoc = await getDoc(recipeRef);
-        if (recipeDoc.exists()) {
-            const recipeData = recipeDoc.data();
-            savedServings = recipeData.servings || defaultServings;
-            savedRecipeText = recipeData.recipe || recipeText;
-        }
-    } catch (error) {
-        console.error("Error fetching recipe data:", error);
-    }
-
-    // Remove any existing popup
-    const existingPopup = document.querySelector(".recipe-popup");
-    if (existingPopup) {
-        document.body.removeChild(existingPopup);
-    }
-
+async function showRecipePopup(mealId, meal, ingredients = [], currentServings = 1, recipeText = "") {
     const popup = document.createElement("div");
     popup.className = "recipe-popup";
 
@@ -730,62 +737,98 @@ async function showRecipePopup(mealId, meal, ingredients, defaultServings = 1, r
     title.textContent = `Recipe for ${meal}`;
     popupContent.appendChild(title);
 
-    const servingsSection = document.createElement("div");
-    servingsSection.className = "servings-section";
     const servingsLabel = document.createElement("label");
-    servingsLabel.textContent = "Servings:";
+    servingsLabel.textContent = "Servings: ";
+    popupContent.appendChild(servingsLabel);
+
     const servingsInput = document.createElement("input");
     servingsInput.type = "number";
-    servingsInput.id = "servingsInput";
-    servingsInput.value = savedServings; // Set the saved servings value
-    servingsSection.appendChild(servingsLabel);
-    servingsSection.appendChild(servingsInput);
-    popupContent.appendChild(servingsSection);
+    servingsInput.value = currentServings;
+    servingsInput.min = 1;
+    popupContent.appendChild(servingsInput);
 
-    const recipeSection = document.createElement("div");
-    recipeSection.className = "recipe-section";
+    const ingredientsTable = document.createElement("table");
+    ingredientsTable.className = "ingredients-table";
+
+    // Apply styles to make the ingredients list smaller
+    ingredientsTable.style.fontSize = "12px";
+    ingredientsTable.style.margin = "10px 0";
+    ingredientsTable.style.width = "100%";
+
+    // Create header row
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = `
+        <th>Ingredient</th>
+        <th>Amount</th>
+        <th>Unit</th>
+    `;
+    ingredientsTable.appendChild(headerRow);
+
+    // Function to render ingredient rows based on servings
+    const renderIngredientRows = (servings) => {
+        // Clear existing rows
+        ingredientsTable.querySelectorAll("tr:not(:first-child)").forEach(row => row.remove());
+
+        // Populate rows with adjusted ingredients
+        ingredients.forEach(ingredient => {
+            const row = document.createElement("tr");
+            const adjustedAmount = (ingredient.amount / currentServings) * servings;
+            row.innerHTML = `
+                <td>${ingredient.ingredient}</td>
+                <td>${adjustedAmount.toFixed(2)}</td>
+                <td>${ingredient.unit}</td>
+            `;
+            ingredientsTable.appendChild(row);
+        });
+    };
+
+    // Initial render
+    renderIngredientRows(currentServings);
+
+    // Update ingredient amounts when servings change
+    servingsInput.addEventListener("input", () => {
+        const newServings = parseInt(servingsInput.value, 10);
+        if (!isNaN(newServings) && newServings > 0) {
+            renderIngredientRows(newServings);
+        }
+    });
+
+    popupContent.appendChild(ingredientsTable);
+
     const recipeLabel = document.createElement("label");
     recipeLabel.textContent = "Recipe:";
-    const recipeInput = document.createElement("textarea");
-    recipeInput.id = "recipeInput";
-    recipeInput.rows = 10; // Set the number of rows
-    recipeInput.cols = 50; // Set the number of columns
-    recipeInput.value = savedRecipeText; // Set the saved recipe text
-    recipeSection.appendChild(recipeLabel);
-    recipeSection.appendChild(recipeInput);
-    popupContent.appendChild(recipeSection);
+    popupContent.appendChild(recipeLabel);
 
-    // Display ingredients
-    const ingredientsSection = document.createElement("div");
-    ingredientsSection.className = "ingredients-section";
-    const ingredientsLabel = document.createElement("label");
-    ingredientsLabel.textContent = "Ingredients:";
-    ingredientsSection.appendChild(ingredientsLabel);
-
-    const ingredientsList = document.createElement("ul");
-    ingredients.forEach(ingredient => {
-        const ingredientItem = document.createElement("li");
-        ingredientItem.textContent = `${ingredient.amount} ${ingredient.unit} of ${ingredient.ingredient}`;
-        ingredientsList.appendChild(ingredientItem);
-    });
-    ingredientsSection.appendChild(ingredientsList);
-    popupContent.appendChild(ingredientsSection);
+    const recipeTextarea = document.createElement("textarea");
+    recipeTextarea.value = recipeText;
+    recipeTextarea.style.width = "100%";
+    recipeTextarea.style.height = "100px";
+    popupContent.appendChild(recipeTextarea);
 
     const saveButton = document.createElement("button");
-    saveButton.textContent = "Save Recipe";
+    saveButton.textContent = "Save";
     saveButton.addEventListener("click", async () => {
-        const recipe = {
-            mealId,
-            meal,
-            servings: parseInt(servingsInput.value, 10),
-            recipe: recipeInput.value
-        };
+        const newRecipeText = recipeTextarea.value.trim();
+        const newServings = parseInt(servingsInput.value, 10);
 
-        await saveRecipeToDatabase(mealId, meal, recipe.servings, recipe.recipe);
+        if (newRecipeText && !isNaN(newServings) && newServings > 0) {
+            try {
+                const recipeRef = doc(db, 'recipes', `${mealId}_recipe`);
+                await setDoc(recipeRef, { recipe: newRecipeText, servings: newServings });
+
+                console.log("Recipe and servings updated successfully:", { meal, mealId, recipe: newRecipeText, servings: newServings });
+                document.body.removeChild(popup);
+            } catch (error) {
+                console.error("Error updating recipe and servings:", error);
+            }
+        } else {
+            alert("Please fill out all fields correctly.");
+        }
     });
     popupContent.appendChild(saveButton);
 
     const closeButton = document.createElement("button");
+    closeButton.className = "close-button";
     closeButton.textContent = "Close";
     closeButton.addEventListener("click", () => document.body.removeChild(popup));
     popupContent.appendChild(closeButton);
@@ -793,6 +836,9 @@ async function showRecipePopup(mealId, meal, ingredients, defaultServings = 1, r
     popup.appendChild(popupContent);
     document.body.appendChild(popup);
 }
+
+
+
 
 
 
@@ -855,7 +901,7 @@ function showServingsPopup(mealId, meal, servings) {
     row.innerHTML = `
         <td>${meal}</td>
         <td>${mealId}</td>
-        <td><input type="number" value="${servings ? servings.servings : 1}" min="1"></td>
+        <td><input type="number" value="${servings !== null && servings !== undefined ? servings : 1}" min="1"></td>
         <td><button class="save-servings-btn">Save</button></td>
     `;
 
@@ -864,12 +910,9 @@ function showServingsPopup(mealId, meal, servings) {
         const newServings = parseInt(row.querySelector("input").value.trim(), 10);
 
         if (!isNaN(newServings) && newServings > 0) {
-            const newServingsData = { mealID: mealId, amount: newServings }; // Updated to mealID
             try {
-                const servingsRef = doc(db, 'servings', mealId);
-                await setDoc(servingsRef, newServingsData);
-
-                console.log("Servings updated successfully:", newServingsData);
+                await saveServings(mealId, newServings);
+                console.log("Servings updated successfully:", { mealId, newServings });
                 document.body.removeChild(popup);
             } catch (error) {
                 console.error("Error updating servings:", error);
@@ -890,6 +933,7 @@ function showServingsPopup(mealId, meal, servings) {
     popup.appendChild(popupContent);
     document.body.appendChild(popup);
 }
+
 
 
 async function updateServingsForPeople(numberOfPeople, weekMeals) {
@@ -978,22 +1022,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-async function saveServings(mealId, meal, servings) {
+async function saveServings(mealId, newServings) {
     if (!mealId) {
         throw new Error("Meal ID is undefined");
     }
 
-    console.log(`Saving servings for Meal ID: ${mealId}, Meal: ${meal}, Servings: ${servings}`);
+    console.log(`Saving servings for Meal ID: ${mealId}, New Servings: ${newServings}`);
 
     try {
-        const servingsRef = doc(db, 'servings', mealId);
-        await setDoc(servingsRef, { meal, mealID: mealId, servings });
+        const recipeRef = doc(db, 'recipes', mealId + '_recipe');
+        await updateDoc(recipeRef, {
+            servings: newServings
+        });
 
-        console.log("Servings saved successfully:", { meal, mealID: mealId, servings });
+        console.log("Servings updated successfully in the recipes table.");
     } catch (error) {
-        console.error("Error saving servings:", error);
+        console.error("Error updating servings:", error);
     }
 }
+
+
+
+
+
+
+
 
 
 
