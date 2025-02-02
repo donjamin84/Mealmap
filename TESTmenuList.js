@@ -727,6 +727,12 @@ async function showOptionsPopup(mealId, meal, ingredients, servings) {
 
 
 async function showRecipePopup(mealId, meal, ingredients = [], currentServings = 1, recipeText = "") {
+    // Remove any existing popup
+    const existingPopup = document.querySelector(".recipe-popup");
+    if (existingPopup) {
+        document.body.removeChild(existingPopup);
+    }
+
     const popup = document.createElement("div");
     popup.className = "recipe-popup";
 
@@ -736,6 +742,11 @@ async function showRecipePopup(mealId, meal, ingredients = [], currentServings =
     const title = document.createElement("h3");
     title.textContent = `Recipe for ${meal}`;
     popupContent.appendChild(title);
+
+    const toggleButton = document.createElement("button");
+    toggleButton.textContent = "Hide Ingredients";
+    toggleButton.className = "toggle-ingredients-btn";
+    popupContent.appendChild(toggleButton);
 
     const servingsLabel = document.createElement("label");
     servingsLabel.textContent = "Servings: ";
@@ -749,11 +760,6 @@ async function showRecipePopup(mealId, meal, ingredients = [], currentServings =
 
     const ingredientsTable = document.createElement("table");
     ingredientsTable.className = "ingredients-table";
-
-    // Apply styles to make the ingredients list smaller
-    ingredientsTable.style.fontSize = "12px";
-    ingredientsTable.style.margin = "10px 0";
-    ingredientsTable.style.width = "100%";
 
     // Create header row
     const headerRow = document.createElement("tr");
@@ -795,47 +801,47 @@ async function showRecipePopup(mealId, meal, ingredients = [], currentServings =
 
     popupContent.appendChild(ingredientsTable);
 
-    const recipeLabel = document.createElement("label");
-    recipeLabel.textContent = "Recipe:";
-    popupContent.appendChild(recipeLabel);
-
+    // Add textarea for recipe text
     const recipeTextarea = document.createElement("textarea");
+    recipeTextarea.className = "recipe-textarea";
     recipeTextarea.value = recipeText;
-    recipeTextarea.style.width = "100%";
-    recipeTextarea.style.height = "100px";
+    recipeTextarea.rows = 10; // Set the number of visible text lines
+    recipeTextarea.style.width = "100%"; // Set the width to 100%
+    recipeTextarea.style.overflowY = "auto"; // Enable vertical scrolling if content overflows
     popupContent.appendChild(recipeTextarea);
 
-    const saveButton = document.createElement("button");
-    saveButton.textContent = "Save";
-    saveButton.addEventListener("click", async () => {
-        const newRecipeText = recipeTextarea.value.trim();
-        const newServings = parseInt(servingsInput.value, 10);
-
-        if (newRecipeText && !isNaN(newServings) && newServings > 0) {
-            try {
-                const recipeRef = doc(db, 'recipes', `${mealId}_recipe`);
-                await setDoc(recipeRef, { recipe: newRecipeText, servings: newServings });
-
-                console.log("Recipe and servings updated successfully:", { meal, mealId, recipe: newRecipeText, servings: newServings });
-                document.body.removeChild(popup);
-            } catch (error) {
-                console.error("Error updating recipe and servings:", error);
-            }
-        } else {
-            alert("Please fill out all fields correctly.");
-        }
-    });
-    popupContent.appendChild(saveButton);
-
     const closeButton = document.createElement("button");
-    closeButton.className = "close-button";
     closeButton.textContent = "Close";
     closeButton.addEventListener("click", () => document.body.removeChild(popup));
     popupContent.appendChild(closeButton);
 
     popup.appendChild(popupContent);
     document.body.appendChild(popup);
+
+    // Toggle ingredients visibility
+    toggleButton.addEventListener("click", () => {
+        if (ingredientsTable.style.display === "none") {
+            ingredientsTable.style.display = "table";
+            toggleButton.textContent = "Hide Ingredients";
+        } else {
+            ingredientsTable.style.display = "none";
+            toggleButton.textContent = "Show Ingredients";
+        }
+    });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
